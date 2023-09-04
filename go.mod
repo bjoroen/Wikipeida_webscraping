@@ -1,4 +1,4 @@
-module wikipeida-shortest-path
+module WikiShortestPath
 
 go 1.21.0
 
