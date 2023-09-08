@@ -1,6 +1,7 @@
 package scraper
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -13,11 +14,17 @@ func Scraper(link string) []string {
 	url := "http://localhost:8080/wikipedia_en_all_nopic_2023-06/A/" + link
 	res, err := http.Get(url)
 	if err != nil {
-		log.Fatal(err)
+
+		return []string{}
 	}
 
 	defer res.Body.Close()
+	if res.StatusCode == 404 {
+		return []string{}
+	}
+
 	if res.StatusCode != 200 {
+		fmt.Println("This link did not work: ", link)
 		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
 	}
 
@@ -32,7 +39,7 @@ func Scraper(link string) []string {
 	content.Find("a").Each(func(i int, s *goquery.Selection) {
 		href, found := s.Attr("href")
 
-		if found && !strings.Contains(href, "http") && !strings.Contains(href, "#cite") {
+		if found && !strings.Contains(href, "http") && !strings.Contains(href, "#") && !strings.Contains(href, "geo:") && !strings.Contains(href, "news:") && !strings.Contains(href, "ftp:") {
 			links = append(links, href)
 		}
 	})

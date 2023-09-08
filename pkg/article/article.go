@@ -1,7 +1,7 @@
 package article
 
 type Article struct {
-	Current string
+	Title   string
 	History []string
 	Links   []string
 }

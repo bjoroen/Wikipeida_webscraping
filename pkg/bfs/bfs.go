@@ -3,21 +3,23 @@ package bfs
 import . "WikiShortestPath/pkg/article"
 
 type BFS struct {
-	queue   []Article
-	visited []string
+	Queue   []Article
+	Visited []string
 }
 
+// Enqueue puts an item at the end of the queue
 func (b *BFS) Enqueue(a Article) {
-	b.queue = append(b.queue, a)
+	b.Queue = append(b.Queue, a)
 }
 
+// Dequeue takes an item from the front of the queue
 func (b *BFS) Dequeue() Article {
-	first := b.queue[0]
-	b.queue = b.queue[:1]
+	first := b.Queue[0]
+	b.Queue = b.Queue[1:]
 
 	return first
 }
 
 func (b *BFS) AddToVisited(s string) {
-	b.visited = append(b.visited, s)
+	b.Visited = append(b.Visited, s)
 }
