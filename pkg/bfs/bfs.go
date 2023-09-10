@@ -4,7 +4,7 @@ import . "WikiShortestPath/pkg/article"
 
 type BFS struct {
 	Queue   []Article
-	Visited []string
+	Visited map[string]int
 }
 
 // Enqueue puts an item at the end of the queue
@@ -21,5 +21,5 @@ func (b *BFS) Dequeue() Article {
 }
 
 func (b *BFS) AddToVisited(s string) {
-	b.Visited = append(b.Visited, s)
+	b.Visited[s] = 1
 }

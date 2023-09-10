@@ -6,7 +6,6 @@ import (
 	"WikiShortestPath/pkg/scraper"
 	"fmt"
 	"os"
-	"slices"
 )
 
 func main() {
@@ -15,6 +14,8 @@ func main() {
 	target := "Old_French"
 
 	bfs := new(BFS)
+
+	bfs.Visited = make(map[string]int)
 
 	links := scraper.Scraper(start)
 	first := Article{Title: start, History: []string{}, Links: links}
@@ -26,6 +27,12 @@ func main() {
 		next := bfs.Dequeue()
 
 		for _, link := range next.Links {
+
+			_, value := bfs.Visited[link]
+
+			if value {
+				continue
+			}
 
 			history := append(next.History, next.Title)
 
@@ -39,10 +46,6 @@ func main() {
 					fmt.Print(" -> ", h)
 				}
 				os.Exit(0)
-			}
-
-			if slices.Contains(bfs.Visited, link) {
-				continue
 			}
 
 			links := scraper.Scraper(link)

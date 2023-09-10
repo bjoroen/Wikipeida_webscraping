@@ -57,13 +57,14 @@ func TestDequeueRemoves(t *testing.T) {
 
 func TestAddToVisited(t *testing.T) {
 	bfs := new(BFS)
+	bfs.Visited = make(map[string]int)
 
 	bfs.AddToVisited("helloWorld")
 
-	got := bfs.Visited[0]
-	want := "helloWorld"
+	got := bfs.Visited["helloWorld"]
+	want := 1
 
 	if got != want {
-		t.Errorf("got %s, wanted %s", got, want)
+		t.Errorf("got %d, wanted %d", got, want)
 	}
 }
