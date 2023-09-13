@@ -6,6 +6,7 @@ import (
 	"WikiShortestPath/pkg/scraper"
 	"fmt"
 	"os"
+	"sync"
 )
 
 func main() {
@@ -24,38 +25,62 @@ func main() {
 
 	for {
 
+		ch := make(chan Article)
+		var wg sync.WaitGroup
 		next := bfs.Dequeue()
 
 		for _, link := range next.Links {
 
-			_, value := bfs.Visited[link]
+			_, in_visited_map := bfs.Visited[link]
 
-			if value {
+			if in_visited_map {
 				continue
 			}
 
 			history := append(next.History, next.Title)
 
 			if link == target {
-				history := append(history, link)
-				fmt.Println("Found it, the path is: ")
-				for i, h := range history {
-					if i == 0 {
-						fmt.Print("", h)
-					}
-					fmt.Print(" -> ", h)
-				}
-				os.Exit(0)
+				fmt.Println(len(bfs.Queue))
+				finish_and_exit(history, link)
 			}
 
-			links := scraper.Scraper(link)
-			article := Article{Title: link, History: history, Links: links}
+			wg.Add(1)
 
-			bfs.Enqueue(article)
+			go get_links_for_article(link, history, ch, &wg)
 			bfs.AddToVisited(link)
+		}
 
+		go func() {
+			wg.Wait()
+			close(ch)
+		}()
+
+		for result := range ch {
+			bfs.Enqueue(result)
 		}
 
 	}
 
+}
+
+func get_links_for_article(l string, h []string, ch chan<- Article, wg *sync.WaitGroup) {
+
+	defer wg.Done()
+
+	links := scraper.Scraper(l)
+	article := Article{Title: l, History: h, Links: links}
+
+	ch <- article
+}
+
+func finish_and_exit(h []string, l string) {
+	history := append(h, l)
+	fmt.Println("Found it, the path is: ")
+	for i, h := range history {
+		if i == 0 {
+			fmt.Print("", h)
+		}
+		fmt.Print(" -> ", h)
+	}
+	os.Exit(0)
 }

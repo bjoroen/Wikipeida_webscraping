@@ -1,7 +1,6 @@
 package scraper
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -24,7 +23,6 @@ func Scraper(link string) []string {
 	}
 
 	if res.StatusCode != 200 {
-		fmt.Println("This link did not work: ", link)
 		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
 	}
 
