@@ -8,12 +8,13 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+// Scraper makes a http call to the link, goes over the HTML and returns an array of the links in the article
+// Should have been split into more functions
 func Scraper(link string) []string {
 
 	url := "http://localhost:8080/wikipedia_en_all_nopic_2023-06/A/" + link
 	res, err := http.Get(url)
 	if err != nil {
-
 		return []string{}
 	}
 
